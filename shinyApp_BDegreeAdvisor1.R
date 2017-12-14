@@ -159,7 +159,7 @@ server <- function(input, output) {
     # ignore this error and allow the function to keep working
     scrape_table <- tryCatch(html_table(link_table)[[1]], error=function(e) matrix(nrow=2, ncol=2))
     
-    # Create a table only if the table exists (i.e. if scrape table ≠ NA)
+    # Create a table only if the table exists (i.e. if scrape table ??? NA)
     if (is.na(scrape_table[1,1]) == FALSE) {
       # Convert the table into a dataframe  
       classes <- scrape_table$X1
@@ -368,7 +368,7 @@ server <- function(input, output) {
     scrape_table1 <- tryCatch(html_table(link_table1)[[1]], error=function(e)  matrix(nrow=2, ncol=2))
     scrape_table2 <- tryCatch(html_table(link_table2)[[1]], error=function(e)  matrix(nrow=2, ncol=2))
     
-    # Create a table only if the table exists (i.e. if scrape table ≠ NA)
+    # Create a table only if the table exists (i.e. if scrape table ??? NA)
     if ((is.na(scrape_table1[1,1])== FALSE) && (is.na(scrape_table2[1,1]) == FALSE)) {
       # This code chunk puts the tables for each concentration together, one after the other 
       ## Table 1 
@@ -380,8 +380,8 @@ server <- function(input, output) {
       table_req1$number_classes[table_req1$number_classes == ""] <- " "
       
       # Add spaces between the two tables
-      space1 <- list(" ", " ", " ")
-      space2 <- list(" ", " ", " ")
+      space1 <- list("-------------------------------------------------", "-------------------------------------------------", "---------------------------------------")
+      space2 <- list("-------------------------------------------------", "-------------------------------------------------", "---------------------------------------")
       
       #Add a title for each table
       name1 <- list("Concentration 1: ", "", "")
