@@ -16,11 +16,17 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  tabPanel("Concentration Requirement",
                           sidebarLayout(
                             sidebarPanel(
+                              # Add Brown Logo
+                              img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
                               # Select concentration
                               selectInput("selected_conc", label = h5("Select a concentration"), 
                                           choices = names(conc_list), selected = conc_list[29]), 
                               # Submit button
-                              actionButton("submit", label = h5("See table of requirements!"))
+                              actionButton("submit", "See table of requirements!"),
+                              # Download button
+                              h5("Download the selected table"),
+                              downloadButton("downloadData", "Download",class="btn btn-primary btn-sm")
+                             
                             ),
                             mainPanel(
                               # Display table of concentration requirements 
@@ -28,8 +34,10 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                             )
                           )
                  ),
-                 tabPanel("Compare concentration requirements",  sidebarLayout(
+                 tabPanel("Compare Concentration Requirements",  sidebarLayout(
                    sidebarPanel(
+                     # Add Brown Logo
+                     img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
                      # Select concentration
                      selectInput("selected_conc1", label = h5("Select concentration 1"), 
                                  choices = names(conc_list), selected = conc_list[29]), 
@@ -175,6 +183,42 @@ server <- function(input, output) {
     } else {stop('This department does not have a table of requirements')}
   })
   
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste(input$selected_conc,"Requirements", ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv({
+        library(rvest)
+        library(dplyr)
+        # Pull up the website that has a list of all the undergraduate concentrations
+        link <- html_session("https://bulletin.brown.edu/the-college/concentrations/")
+        # Select the concentration of interest
+        link_conc <- link %>% follow_link(conc_name()+36)      
+        # Read the content of the link
+        content <- read_html(link_conc)
+        # Scrape the table
+        link_table <- html_nodes(content, 'table')
+        # If the department doesn't display a table, an error "subscript out of bounds" appears. tryCatch will 
+        # ignore this error and allow the function to keep working
+        scrape_table <- tryCatch(html_table(link_table)[[1]], error=function(e) print(NA))
+        # Create a table only if the table exists (i.e. if scrape table ??? NA)
+        if (is.na(scrape_table) == FALSE) {
+          # Convert the table into a dataframe  
+          classes <- scrape_table$X1
+          class_name <- scrape_table$X2
+          number_classes <- scrape_table$X3
+          
+          table_req1 <- data_frame(classes, class_name, number_classes)
+          table_req1$number_classes[table_req1$number_classes == ""] <- " "
+          
+          explain <- list("", "", "If the Class Number cell is empty or has a NA, refer to the category the class belongs to.")
+          table_req2 <- rbind(table_req1, explain)
+          table_req1re<- rename(table_req2, "Class Code" = classes, "Class Name" = class_name, "Number of Classes" = number_classes)
+        } else {stop('This department does not have a table of requirements')}
+      }, file, row.names = FALSE)
+    }
+  )
   
   ################################################# Tab 2   ################################################# 
   conc_name1 <- eventReactive(input$submit2, {
