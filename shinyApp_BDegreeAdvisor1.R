@@ -54,7 +54,16 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  )
                  ),
                  tabPanel("Classes availabe per semester"),
-                 tabPanel("Concentration demographics")
+                 tabPanel("Find Your Next Job",
+                          sidebarLayout(
+                            sidebarPanel(
+                              textInput(inputId = "query",label="Job Title",value="",placeholder = "eg :data analyst"),
+                              textInput(inputId = "loc",label="Location",value="",placeholder = "eg :Providence,RI"),
+                              actionButton("submit3",label=h5("Go!"))
+                            ),
+                            mainPanel(
+                              DT::dataTableOutput(outputId = "jobtable")
+                            )))
 )
 
 
@@ -458,7 +467,96 @@ server <- function(input, output) {
       
     } else {stop('One of the concentrations does not have a table presented')}
   })  
+  indeed_job_compiled<-data.frame("Hiring Company"=character(),
+                                  "Job Title"=character(),
+                                  "Description"=character(),
+                                  "Location"=character(),
+                                  "Job Link"=character()) 
   
+  job_finder<-reactive({
+    input$submit3
+    querys<-isolate(as.character(input$query))
+    locs<-isolate(as.character(input$loc))
+    
+    
+    b= seq(from= 10, to= 50, by=10)
+    urls=vector(length=length(b)+1)
+    
+    url_part1<-"https://www.indeed.com/jobs?q="
+    url_part2<-"&l="
+    url_part3<-"&start="  
+    
+    
+    first_page<-paste0(url_part1,querys,url_part2,locs)
+    
+    urls[1]<-gsub(pattern=" ",replacement = "+",first_page)
+    
+    for (i in 1:length(b)){
+      
+      url<-paste0(url_part1,querys,url_part2,locs,url_part3,b[i])  
+      
+      urls[i+1]<-gsub(pattern=" ",replacement = "+",url) 
+    }
+    
+    
+    
+    
+    
+    for ( j in 1:length(urls)){
+      
+      session1<-html_session(urls[j])
+      
+      # grab the titles of the jobs
+      job_titles<-session1 %>%
+        html_nodes("[data-tn-element=jobTitle]") %>%
+        html_text() 
+      
+      # The name of the Organization that is hiring
+      company_names<-session1 %>%
+        html_nodes(".company") %>%
+        html_text()
+      
+      # Where is the job located ?
+      location<-session1 %>%
+        html_nodes(".location") %>%
+        html_text()
+      # Job Description
+      description <- session1 %>%
+        html_nodes(".summary") %>%
+        html_text()
+      
+      # Give the user a link to the job so that they can apply to it later
+      job_link<- session1%>%
+        html_nodes(css= "[data-tn-element=jobTitle]") %>%
+        html_attr("href")
+      
+      job_link<-paste('https://www.indeed.com',job_link,sep = '')
+      job_link<-paste(job_link, ')', sep='')
+      
+      job_link<-paste0("<a href='",job_link,"'>",job_link, job_link,"</a>")
+      
+      
+      indeed_job_compiled<- rbind(indeed_job_compiled,data.frame(company_names,job_titles,description,location,job_link))
+      
+      
+    }
+    indeed_job_compiled
+    
+    
+    
+    
+  })
+  
+  
+  
+  
+  
+  output$jobtable<-
+    
+    DT::renderDataTable({job_finder()},escape=FALSE)
+  
+
+
 }
 
 
