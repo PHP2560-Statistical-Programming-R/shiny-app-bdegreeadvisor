@@ -10,6 +10,7 @@ conc_list <- link %>%
 conc_list <- as.vector(conc_list)
 names(conc_list) <- conc_list
 
+# Load package to use a predetermined theme
 library(shinythemes)
 
 ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
@@ -30,7 +31,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                             ),
                             mainPanel(
                               # Display table of concentration requirements 
-                              tableOutput("conc_table")
+                              DT::dataTableOutput("conc_table")
                             )
                           )
                  ),
@@ -57,6 +58,8 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  tabPanel("Find Your Next Job",
                           sidebarLayout(
                             sidebarPanel(
+                              # Add Brown Logo
+                              img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
                               textInput(inputId = "query",label="Job Title",value="",placeholder = "eg :data analyst"),
                               textInput(inputId = "loc",label="Location",value="",placeholder = "eg :Providence,RI"),
                               actionButton("submit3",label=h5("Go!"))
@@ -161,7 +164,7 @@ server <- function(input, output) {
            "Visual Art" = 81)                                  
   }, ignoreNULL = FALSE) 
   
-  output$conc_table <- renderTable({
+  table_req <- reactive({
     library(rvest)
     library(dplyr)
     # Pull up the website that has a list of all the undergraduate concentrations
@@ -176,7 +179,7 @@ server <- function(input, output) {
     # ignore this error and allow the function to keep working
     scrape_table <- tryCatch(html_table(link_table)[[1]], error=function(e) matrix(nrow=2, ncol=2))
     
-    # Create a table only if the table exists (i.e. if scrape table ??? NA)
+    # Create a table only if the table exists (i.e. if scrape table is not NA)
     if (is.na(scrape_table[1,1]) == FALSE) {
       # Convert the table into a dataframe  
       classes <- scrape_table$X1
@@ -188,10 +191,16 @@ server <- function(input, output) {
       
       explain <- list("", "", "If the Class Number cell is empty or has a NA, refer to the category the class belongs to.")
       table_req2 <- rbind(table_req1, explain)
-      table_req1re<- rename(table_req2, "Class Code" = classes, "Class Name" = class_name, "Number of Classes" = number_classes)
+      table_req1re <- rename(table_req2, "Class Code" = classes, "Class Name" = class_name, "Number of Classes" = number_classes)
     } else {stop('This department does not have a table of requirements')}
   })
   
+  # Create the table as a tibble
+  output$conc_table <-
+    DT::renderDataTable({table_req()},escape=FALSE)
+  
+  
+  # Download Table of Requirements
   output$downloadData <- downloadHandler(
     filename = function() {
       paste(input$selected_conc,"Requirements", ".csv", sep = "")
@@ -228,6 +237,7 @@ server <- function(input, output) {
       }, file, row.names = FALSE)
     }
   )
+  
   
   ################################################# Tab 2   ################################################# 
   conc_name1 <- eventReactive(input$submit2, {
@@ -467,6 +477,7 @@ server <- function(input, output) {
       
     } else {stop('One of the concentrations does not have a table presented')}
   })  
+<<<<<<< HEAD
 ##############################################################Tab 4##################################################################################
   indeed_job_compiled<-tibble("Hiring Company"=character(),
                               "Job Title"=character(),
@@ -474,6 +485,21 @@ server <- function(input, output) {
                               "Location"=character(),
                               "Job Link"=character()
   )  
+=======
+  
+  
+  
+  
+  
+  
+  ################################################# Tab 4   ################################################# 
+  
+  indeed_job_compiled<-data.frame("Hiring Company"=character(),
+                                  "Job Title"=character(),
+                                  "Description"=character(),
+                                  "Location"=character(),
+                                  "Job Link"=character()) 
+>>>>>>> 068af9dffe92e0522e2fd93a2f5fab70c539f095
   
 job_finder<-reactive({
     input$submit3
@@ -481,7 +507,6 @@ job_finder<-reactive({
     
     querys<-isolate(as.character(input$query))
     locs<-isolate(as.character(input$loc))
-    
     
     b= seq(from= 10, to= 50, by=10)
     urls=vector(length=length(b)+1)
@@ -501,9 +526,6 @@ job_finder<-reactive({
       
       urls[i+1]<-gsub(pattern=" ",replacement = "+",url) 
     }
-    
-    
-    
     
     
     for ( j in 1:length(urls)){
@@ -545,25 +567,18 @@ job_finder<-reactive({
       
       indeed_job_compiled<- bind_rows(indeed_job_compiled,df_new)
       
-      
     }
     indeed_job_compiled
-    
-    
-    
-    
   })
   
-  
-  
-  
-  
   output$jobtable<-
-    
     DT::renderDataTable({job_finder()},escape=FALSE)
   
   
+<<<<<<< HEAD
   
+=======
+>>>>>>> 068af9dffe92e0522e2fd93a2f5fab70c539f095
 }
 
 
