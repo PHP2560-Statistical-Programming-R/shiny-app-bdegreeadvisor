@@ -50,7 +50,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                    ),
                    mainPanel(
                      # Display table of concentration requirements 
-                     tableOutput("conc_comp")
+                     DT::dataTableOutput("conc_comp")
                    )
                  )
                  ),
@@ -412,7 +412,7 @@ server <- function(input, output) {
   
   
   
-  output$conc_comp <- renderTable({
+  output$conc_comp <-DT::renderDataTable({
     library(rvest)
     library(dplyr)
     # Pull up the website that has a list of all the undergraduate concentrations
@@ -439,7 +439,8 @@ server <- function(input, output) {
       class_name <- scrape_table1$X2
       number_classes <- scrape_table1$X3
       
-      table_req1 <- data_frame(classes, class_name, number_classes)
+      library(tibble)
+      table_req1 <- tibble(classes, class_name, number_classes)
       table_req1$number_classes[table_req1$number_classes == ""] <- " "
       
       # Add spaces between the two tables
@@ -458,7 +459,7 @@ server <- function(input, output) {
       classes <- scrape_table2$X1
       class_name <- scrape_table2$X2
       number_classes <- scrape_table2$X3
-      table_req2 <- data_frame(classes, class_name, number_classes)
+      table_req2 <- tibble(classes, class_name, number_classes)
       table_req2 <- rbind(name2, table_req2)
       
       # Join the two tables
@@ -476,21 +477,21 @@ server <- function(input, output) {
       rbind(table_req_2, explain)
       
     } else {stop('One of the concentrations does not have a table presented')}
-  })  
-
+  }, escape = FALSE)  
+  
   
   ################################################# Tab 4   ################################################# 
   library(DT)
   indeed_job_compiled<-tibble("Hiring Company"=character(),
-                                  "Job Title"=character(),
-                                  "Description"=character(),
-                                  "Location"=character(),
-                                  "Job Link"=character()) 
-
+                              "Job Title"=character(),
+                              "Description"=character(),
+                              "Location"=character(),
+                              "Job Link"=character()) 
   
-job_finder<-reactive({
+  
+  job_finder<-reactive({
     input$submit3
-
+    
     
     querys<-isolate(as.character(input$query))
     locs<-isolate(as.character(input$loc))
@@ -550,7 +551,7 @@ job_finder<-reactive({
       
       df_new<-tibble(company_names,job_titles,description,location,job_link)
       df_new<- df_new %>%
-              rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
+        rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
       
       indeed_job_compiled<- bind_rows(indeed_job_compiled,df_new)
       
@@ -562,7 +563,7 @@ job_finder<-reactive({
     DT::renderDataTable({job_finder()},escape=FALSE)
   
   
-
+  
 }
 
 
