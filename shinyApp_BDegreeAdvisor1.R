@@ -477,29 +477,16 @@ server <- function(input, output) {
       
     } else {stop('One of the concentrations does not have a table presented')}
   })  
-<<<<<<< HEAD
-##############################################################Tab 4##################################################################################
-  indeed_job_compiled<-tibble("Hiring Company"=character(),
-                              "Job Title"=character(),
-                              "Description"=character(),
-                              "Location"=character(),
-                              "Job Link"=character()
-  )  
-=======
-  
-  
-  
-  
-  
+
   
   ################################################# Tab 4   ################################################# 
-  
-  indeed_job_compiled<-data.frame("Hiring Company"=character(),
+  library(DT)
+  indeed_job_compiled<-tibble("Hiring Company"=character(),
                                   "Job Title"=character(),
                                   "Description"=character(),
                                   "Location"=character(),
                                   "Job Link"=character()) 
->>>>>>> 068af9dffe92e0522e2fd93a2f5fab70c539f095
+
   
 job_finder<-reactive({
     input$submit3
@@ -558,8 +545,8 @@ job_finder<-reactive({
       
       job_link<-paste('https://www.indeed.com',job_link,sep = '')
       job_link<-paste(job_link, ')', sep='')
-      
-      job_link<-paste0("<a href='",job_link,"'>",job_link, job_link,"</a>")
+      label<- "Apply Here!"
+      job_link<-paste0("<a href='",job_link,"'>",label,"</a>")
       
       df_new<-tibble(company_names,job_titles,description,location,job_link)
       df_new<- df_new %>%
@@ -575,10 +562,7 @@ job_finder<-reactive({
     DT::renderDataTable({job_finder()},escape=FALSE)
   
   
-<<<<<<< HEAD
-  
-=======
->>>>>>> 068af9dffe92e0522e2fd93a2f5fab70c539f095
+
 }
 
 
