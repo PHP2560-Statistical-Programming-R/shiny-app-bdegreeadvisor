@@ -1,5 +1,5 @@
 library(shiny)
-
+library(tibble)
 # Compile a list of undergraduate concentrations available at Brown from the website, so 
 # that if the concentrations are updated on the website, the list is also updated
 library(rvest)
@@ -439,7 +439,7 @@ server <- function(input, output) {
       class_name <- scrape_table1$X2
       number_classes <- scrape_table1$X3
       
-      library(tibble)
+      
       table_req1 <- tibble(classes, class_name, number_classes)
       table_req1$number_classes[table_req1$number_classes == ""] <- " "
       
