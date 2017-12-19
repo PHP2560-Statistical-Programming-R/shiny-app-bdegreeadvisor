@@ -26,7 +26,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                               # Download button
                               h5("Download the selected table"),
                               downloadButton("downloadData", "Download",class="btn btn-primary btn-sm")
-                             
+                              
                             ),
                             mainPanel(
                               # Display table of concentration requirements 
@@ -467,14 +467,18 @@ server <- function(input, output) {
       
     } else {stop('One of the concentrations does not have a table presented')}
   })  
-  indeed_job_compiled<-data.frame("Hiring Company"=character(),
-                                  "Job Title"=character(),
-                                  "Description"=character(),
-                                  "Location"=character(),
-                                  "Job Link"=character()) 
+##############################################################Tab 4##################################################################################
+  indeed_job_compiled<-tibble("Hiring Company"=character(),
+                              "Job Title"=character(),
+                              "Description"=character(),
+                              "Location"=character(),
+                              "Job Link"=character()
+  )  
   
-  job_finder<-reactive({
+job_finder<-reactive({
     input$submit3
+
+    
     querys<-isolate(as.character(input$query))
     locs<-isolate(as.character(input$loc))
     
@@ -535,8 +539,11 @@ server <- function(input, output) {
       
       job_link<-paste0("<a href='",job_link,"'>",job_link, job_link,"</a>")
       
+      df_new<-tibble(company_names,job_titles,description,location,job_link)
+      df_new<- df_new %>%
+              rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
       
-      indeed_job_compiled<- rbind(indeed_job_compiled,data.frame(company_names,job_titles,description,location,job_link))
+      indeed_job_compiled<- bind_rows(indeed_job_compiled,df_new)
       
       
     }
@@ -555,8 +562,8 @@ server <- function(input, output) {
     
     DT::renderDataTable({job_finder()},escape=FALSE)
   
-
-
+  
+  
 }
 
 
