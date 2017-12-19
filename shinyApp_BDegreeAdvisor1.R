@@ -58,6 +58,8 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  tabPanel("Find Your Next Job",
                           sidebarLayout(
                             sidebarPanel(
+                              # Add Brown Logo
+                              img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
                               textInput(inputId = "query",label="Job Title",value="",placeholder = "eg :data analyst"),
                               textInput(inputId = "loc",label="Location",value="",placeholder = "eg :Providence,RI"),
                               actionButton("submit3",label=h5("Go!"))
