@@ -1,6 +1,10 @@
 library(shiny)
 library(tibble)
 library(DT)
+library(devtools)
+devtools::install_github("PHP2560-Statistical-Programming-R/r-package-courses-brown/BDegreeAdvisor")
+library(BDegreeAdvisor)
+
 # Compile a list of undergraduate concentrations available at Brown from the website, so 
 # that if the concentrations are updated on the website, the list is also updated
 library(rvest)
