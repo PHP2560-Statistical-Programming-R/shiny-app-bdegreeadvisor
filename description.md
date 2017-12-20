@@ -15,3 +15,12 @@ Throughout our time at Brown, we have struggled to navigate Brown's online resou
 # Components
 
 In this app users are able to select a concentration from a drop down menu and get a table of the required courses for the selected concentration . They are also able to select a second concentration and compare requirements between the two in order to facilitate making a choice or to encourage other users to double concentrate wisely . Users are able to plan their semesters by choosing a concentration and a particular semester and view which of their required courses are being taught in the selected semester. Lastly users are also able to explore the current job market by searching for a job/keyword/skill and a particular location and an up to date table of current jobs will populate with information such as the job title and description as well as a link that users can follow to apply for the job online. Lastly users are able to download any output that they would like from the app and are able to save it to their device for easy viewing.
+
+#Necessary Packages to Run the App
+Please make sure the following packages are installed before you run the app
+1.library(shiny)
+2.library(DT)
+3.library(tibble)
+4.library(rvest)
+5.library(shinythemes)
+6.library(dplyr)
