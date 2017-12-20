@@ -14,6 +14,19 @@ names(conc_list) <- conc_list
 library(shinythemes)
 
 ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
+                 tabPanel("Welcome",
+                 em(headerPanel(h1("Welcome to BDegreeAdvisor",style= {"font-family:Georgia;color:#ad1d28"}))),
+                 sidebarLayout(
+                   sidebarPanel(img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "right")),
+                          mainPanel(
+                            h3("How to use the app",style="font-family:Georgia"),
+                            tags$p(" Welcome to BDegree Advisor, the one stop app to help students figure out their concentration, create their schedule, and search for jobs all in one place!",style="font-family:Georgia"),
+                            tags$br("In order to use this app, simply navigate to the different tabs above. Each tab consists of drop down menus where you can choose a concentration and get an up to date table of the requirements, or cross reference and compare requirements between concentrations. You can also find out what courses are being offered in the upcoming semesters and customize your schedule. Lastly you can populate a search query to find up to date job postings that fit your specifications!",style="font-family:Georgia"),
+                            tags$br("If you would like to save the output onto your device, you can simply click the 'Download' button featured in the tab and save the file onto your computer.",style="font-family:Georgia"),
+                            tags$br(" We hope you enjoy this app and that it can help guide you during your time at Brown!",style="font-family:Georgia")
+                          )
+                          
+                 )),
                  tabPanel("Concentration Requirement",
                           sidebarLayout(
                             sidebarPanel(
@@ -60,18 +73,21 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                             sidebarPanel(
                               # Add Brown Logo
                               img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
-                              textInput(inputId = "query",label="Job Title",value="",placeholder = "eg :data analyst"),
-                              textInput(inputId = "loc",label="Location",value="",placeholder = "eg :Providence,RI"),
-                              actionButton("submit3",label=h5("Go!"))
+                              textInput(inputId = "query",label="Job Title",value="",placeholder = "eg: data analyst"),
+                              textInput(inputId = "loc",label="Location",value="",placeholder = "eg: Providence,RI or 02912"),
+                              actionButton("submit3",label=h5("Go!")),
+                              downloadButton('downloadJobs','Download',class="btn btn-primary btn-sm")
                             ),
                             mainPanel(
+                              #Display table of job postings
                               DT::dataTableOutput(outputId = "jobtable")
                             )))
 )
 
 
 server <- function(input, output) {
-  
+  ################################################Welcome Tab ###################################################
+
   ################################################# Tab 1   #################################################
   conc_name <- eventReactive(input$submit, {
     ## Code used to change values of choices in switch function
@@ -481,11 +497,7 @@ server <- function(input, output) {
   
   ################################################# Tab 4   ################################################# 
   library(DT)
-  indeed_job_compiled<-tibble("Hiring Company"=character(),
-                                  "Job Title"=character(),
-                                  "Description"=character(),
-                                  "Location"=character(),
-                                  "Job Link"=character()) 
+  
 
   
 job_finder<-reactive({
@@ -494,6 +506,12 @@ job_finder<-reactive({
     
     querys<-isolate(as.character(input$query))
     locs<-isolate(as.character(input$loc))
+    
+    indeed_job_compiled<-tibble("Hiring Company"=character(),
+                                "Job Title"=character(),
+                                "Description"=character(),
+                                "Location"=character(),
+                                "Job Link"=character()) 
     
     b= seq(from= 10, to= 50, by=10)
     urls=vector(length=length(b)+1)
@@ -561,9 +579,17 @@ job_finder<-reactive({
   output$jobtable<-
     DT::renderDataTable({job_finder()},escape=FALSE)
   
-  
+  output$downloadJobs <- downloadHandler(
+    filename = function() {
+      paste(input$query,"Job Postings", ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv({job_finder()},file)
+               
+    }
+
+)
 
 }
-
 
 shinyApp(ui=ui, server=server)  
