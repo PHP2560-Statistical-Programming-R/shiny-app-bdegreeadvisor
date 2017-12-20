@@ -189,7 +189,6 @@ server <- function(input, output) {
   }, ignoreNULL = FALSE) 
   
   table_req <- reactive({
-    library(rvest)
     library(dplyr)
     # Pull up the website that has a list of all the undergraduate concentrations
     link <- html_session("https://bulletin.brown.edu/the-college/concentrations/")
@@ -231,8 +230,6 @@ server <- function(input, output) {
     },
     content = function(file) {
       write.csv({
-        library(rvest)
-        library(dplyr)
         # Pull up the website that has a list of all the undergraduate concentrations
         link <- html_session("https://bulletin.brown.edu/the-college/concentrations/")
         # Select the concentration of interest
@@ -437,8 +434,6 @@ server <- function(input, output) {
   
   
   output$conc_comp <- DT::renderDataTable({
-    library(rvest)
-    library(dplyr)
     # Pull up the website that has a list of all the undergraduate concentrations
     link <- html_session("https://bulletin.brown.edu/the-college/concentrations/")
     # Select the concentration of interest
