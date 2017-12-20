@@ -16,10 +16,14 @@ library(shinythemes)
 
 ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  tabPanel("Welcome",
+                  # Create A header panel
                  em(headerPanel(h1("Welcome to BDegreeAdvisor",style= {"font-family:Georgia;color:#ad1d28"}))),
                  sidebarLayout(
+                   #add the brown logo
                    sidebarPanel(img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "right")),
                           mainPanel(
+                            # Add the text for the main panel
+                            
                             h3("How to use the app",style="font-family:Georgia"),
                             tags$p(" Welcome to BDegree Advisor, the one stop app to help students figure out their concentration, create their schedule, and search for jobs all in one place!",style="font-family:Georgia"),
                             tags$br("In order to use this app, simply navigate to the different tabs above. Each tab consists of drop down menus where you can choose a concentration and get an up to date table of the requirements, or cross reference and compare requirements between concentrations. You can also find out what courses are being offered in the upcoming semesters and customize your schedule. Lastly you can populate a search query to find up to date job postings that fit your specifications!",style="font-family:Georgia"),
@@ -504,28 +508,30 @@ server <- function(input, output) {
 job_finder<-reactive({
     input$submit3
 
-    
+    # isolate the inputs 
     querys<-isolate(as.character(input$query))
     locs<-isolate(as.character(input$loc))
     
+    # Create an empty tibble to store results in
     indeed_job_compiled<-tibble("Hiring Company"=character(),
                                 "Job Title"=character(),
                                 "Description"=character(),
                                 "Location"=character(),
                                 "Job Link"=character()) 
     
+    # Divide the url into parts and update the URL based on the user's inputs
     b= seq(from= 10, to= 50, by=10)
     urls=vector(length=length(b)+1)
-    
     url_part1<-"https://www.indeed.com/jobs?q="
     url_part2<-"&l="
     url_part3<-"&start="  
     
-    
+    # The first page of search results has a slightly different URL structure and so we account for that here
     first_page<-paste0(url_part1,querys,url_part2,locs)
     
     urls[1]<-gsub(pattern=" ",replacement = "+",first_page)
     
+    # This loops runs through all pages of search results and pastes together the appropriate URLS
     for (i in 1:length(b)){
       
       url<-paste0(url_part1,querys,url_part2,locs,url_part3,b[i])  
@@ -533,7 +539,7 @@ job_finder<-reactive({
       urls[i+1]<-gsub(pattern=" ",replacement = "+",url) 
     }
     
-    
+    # This loop runs through each page of search results and scrapes the desired information
     for ( j in 1:length(urls)){
       
       session1<-html_session(urls[j])
@@ -564,22 +570,28 @@ job_finder<-reactive({
       
       job_link<-paste('https://www.indeed.com',job_link,sep = '')
       job_link<-paste(job_link, ')', sep='')
+      
+      # Create a label for the url so that a user can click on the words "Apply Here!" and be taken to the appropriate website
       label<- "Apply Here!"
       job_link<-paste0("<a href='",job_link,"'>",label,"</a>")
       
+      # create a tibble with all the scraped information and rename the column names
       df_new<-tibble(company_names,job_titles,description,location,job_link)
       df_new<- df_new %>%
               rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
       
+      # bind all the results from all the search pages together
       indeed_job_compiled<- bind_rows(indeed_job_compiled,df_new)
       
     }
     indeed_job_compiled
   })
   
+  #Output the results as a Data Table
   output$jobtable<-
     DT::renderDataTable({job_finder()},escape=FALSE)
   
+  # Create the output for the download button
   output$downloadJobs <- downloadHandler(
     filename = function() {
       paste(input$query,"Job Postings", ".csv", sep = "")
