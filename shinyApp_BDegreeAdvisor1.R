@@ -35,7 +35,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                           )
                           
                  )),
-                 tabPanel("Concentration Requirement",
+                 tabPanel("Concentration Requirements",
                           sidebarLayout(
                             sidebarPanel(
                               # Add Brown Logo
@@ -75,7 +75,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                    )
                  )
                  ),
-                 tabPanel("Classes availabe per semester"),
+                 tabPanel("Classes available per semester"),
                  tabPanel("Find Your Next Job",
                           sidebarLayout(
                             sidebarPanel(
