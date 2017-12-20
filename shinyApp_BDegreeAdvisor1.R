@@ -82,6 +82,8 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                  tabPanel("Classes available per semester",
                           sidebarLayout(
                             sidebarPanel(
+                              # Add Brown Logo
+                              img(src ='https://www.edx.org/sites/default/files/school/image/logo/brown_200x101.png', aligh = "left"),
                               selectInput("conc_name", "Concentration", choices = names(conc_list), selected = conc_list[29]),
                               selectInput("term", "Semester", choices = c("fall", "winter", "spring"), selected = "fall")
                             ),
