@@ -71,7 +71,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                    ),
                    mainPanel(
                      # Display table of concentration requirements 
-                     tableOutput("conc_comp")
+                     DT::dataTableOutput("conc_comp") 
                    )
                  )
                  ),
@@ -436,7 +436,7 @@ server <- function(input, output) {
   
   
   
-  output$conc_comp <- renderTable({
+  output$conc_comp <- DT::renderDataTable({
     library(rvest)
     library(dplyr)
     # Pull up the website that has a list of all the undergraduate concentrations
@@ -463,7 +463,7 @@ server <- function(input, output) {
       class_name <- scrape_table1$X2
       number_classes <- scrape_table1$X3
       
-      table_req1 <- data_frame(classes, class_name, number_classes)
+      table_req1 <- tibble(classes, class_name, number_classes)
       table_req1$number_classes[table_req1$number_classes == ""] <- " "
       
       # Add spaces between the two tables
@@ -482,7 +482,7 @@ server <- function(input, output) {
       classes <- scrape_table2$X1
       class_name <- scrape_table2$X2
       number_classes <- scrape_table2$X3
-      table_req2 <- data_frame(classes, class_name, number_classes)
+      table_req2 <- tibble(classes, class_name, number_classes)
       table_req2 <- rbind(name2, table_req2)
       
       # Join the two tables
@@ -500,7 +500,7 @@ server <- function(input, output) {
       rbind(table_req_2, explain)
       
     } else {stop('One of the concentrations does not have a table presented')}
-  })  
+  }, escape = FALSE)  
 
   
   ################################################# Tab 4   ################################################# 
