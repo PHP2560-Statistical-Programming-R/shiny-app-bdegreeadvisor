@@ -79,7 +79,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                    )
                  )
                  ),
-                 tabPanel("Classes available per semester",
+                 tabPanel("Classes Available Per Semester",
                           sidebarLayout(
                             sidebarPanel(
                               # Add Brown Logo
@@ -101,6 +101,7 @@ ui <- navbarPage("BDegreeAdvisor", theme = shinytheme("united"),
                               textInput(inputId = "query",label="Job Title",value="",placeholder = "eg: data analyst"),
                               textInput(inputId = "loc",label="Location",value="",placeholder = "eg: Providence,RI or 02912"),
                               actionButton("submit3",label=h5("Go!")),
+                              h5("Download the selected table"),
                               downloadButton('downloadJobs','Download',class="btn btn-primary btn-sm")
                             ),
                             mainPanel(
