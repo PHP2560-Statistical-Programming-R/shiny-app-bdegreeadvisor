@@ -37,6 +37,9 @@ Please make sure the following packages are installed before you run the app:
 # Work Breakdown
 
 Requirements Tab: Carolina & Weiqi
+
 Comparison Tab: Carolina & Weiqi
+
 Scheduling Tab: Maggie
+
 Job Tab: Joyce
