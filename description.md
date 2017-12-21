@@ -19,21 +19,19 @@ In this app users are able to select a concentration from a drop down menu and g
 # Necessary Packages to Run the App
 Please make sure the following packages are installed before you run the app
 
-1.library(shiny)
+1.`library(shiny)`
 
-2.library(DT)
+2.`library(DT)`
 
-3.library(tibble)
+3.`library(rvest)`
 
-4.library(rvest)
+4.`library(shinythemes)`
 
-5.library(shinythemes)
+5.`library(dplyr)`
 
-6.library(dplyr)
-
-7.library(devtools)
+6.`library(devtools)
   devtools::install_github("PHP2560-Statistical-Programming-R/r-package-courses-brown/BDegreeAdvisor")
-  library(BDegreeAdvisor)
+  library(BDegreeAdvisor)`
 
 # Work Breakdown
 
