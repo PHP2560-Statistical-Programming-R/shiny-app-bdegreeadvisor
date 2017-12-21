@@ -29,9 +29,9 @@ Please make sure the following packages are installed before you run the app
 
 5.`library(dplyr)`
 
-6.`library(devtools)
-  devtools::install_github("PHP2560-Statistical-Programming-R/r-package-courses-brown/BDegreeAdvisor")
-  library(BDegreeAdvisor)`
+6.`library(devtools)`
+  `devtools::install_github("PHP2560-Statistical-Programming-R/r-package-courses-brown/BDegreeAdvisor")`
+  `library(BDegreeAdvisor)`
 
 # Work Breakdown
 
