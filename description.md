@@ -34,3 +34,10 @@ Please make sure the following packages are installed before you run the app
 7.library(devtools)
   devtools::install_github("PHP2560-Statistical-Programming-R/r-package-courses-brown/BDegreeAdvisor")
   library(BDegreeAdvisor)
+
+# Work Breakdown
+
+Requirements Tab: Carolina & Weiqi
+Comparison Tab: Carolina & Weiqi
+Scheduling Tab: Maggie
+Job Tab: Joyce
