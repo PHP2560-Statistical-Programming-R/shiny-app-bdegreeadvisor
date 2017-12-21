@@ -650,10 +650,10 @@ job_finder<-reactive({
       # create a tibble with all the scraped information and rename the column names
       df_new<-tibble(company_names,job_titles,description,location,job_link)
       df_new<- df_new %>%
-              rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
+              dplyr::rename("Hiring Company"=company_names,"Job Title"=job_titles,"Description"=description,"Location"=location,"Job Link"=job_link)
       
       # bind all the results from all the search pages together
-      indeed_job_compiled<- bind_rows(indeed_job_compiled,df_new)
+      indeed_job_compiled<- dplyr::bind_rows(indeed_job_compiled,df_new)
       
     }
     indeed_job_compiled
