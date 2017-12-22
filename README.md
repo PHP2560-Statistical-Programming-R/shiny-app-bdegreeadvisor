@@ -1,12 +1,12 @@
-# Add description as well as the break down of work to be done by group. 
+ 
 ---
-title: "Shiny App Proposal"
+title: "Shiny App Description"
 output: html_document
 ---
 
 # Overview
 
-BDegreeAdvisor is an interactive interface for users to explore undergraduate concentrations and their requirements at Brown University. This app is meant to be a tool to assist students in academic planning as well as advisors in guiding students. We hope this app helps students along the confusing path of picking a concentration. 
+BDegreeAdvisor is an interactive interface for undergraduate students and faculty advisors at Brown University to explore undergraduate concentrations, their requirements, current course offerings, and job postings all in one place . This app is meant to be a tool to assist students in academic planning as well as advisors in guiding students. We hope this app helps students along the confusing path of picking a concentration. 
 
 # Why this is important
 
